@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador BSOD</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        #start-screen {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #start-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 50%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
+        }
+        
+        .warning-text {
+            color: #ff0000;
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            margin-bottom: 30px;
+            animation: glitch 0.3s infinite;
+            z-index: 1;
+        }
+        
+        .skull {
+            font-size: 100px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 30px #ff0000);
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 1;
+        }
+        
+        #start-btn {
+            padding: 25px 60px;
+            font-size: 28px;
+            background: linear-gradient(45deg, #8b0000, #ff0000);
+            color: white;
+            border: 3px solid #ff0000;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            z-index: 1;
+        }
+        
+        #start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 1), inset 0 0 30px rgba(0, 0, 0, 0.7);
+            background: linear-gradient(45deg, #ff0000, #ff4444);
+        }
+        
+        .warning-message {
+            color: #ff4444;
+            font-size: 18px;
+            margin-top: 30px;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+            z-index: 1;
+        }
+        
+        #bsod {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0078d7;
+            color: white;
+            padding: 80px;
+            box-sizing: border-box;
+        }
+        
+        .sad-face {
+            font-size: 120px;
+            margin-bottom: 30px;
+        }
+        
+        .message {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .info {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-top: 40px;
+        }
+        
+        .progress {
+            margin-top: 40px;
+            font-size: 18px;
+        }
+        
+        .code {
+            margin-top: 60px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        #counter {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="start-screen">
+        <div class="skull">☠️</div>
+        <div class="warning-text">⚠️ AVISO CRÍTICO ⚠️</div>
+        <button id="start-btn">NÃO CLIQUE AQUI</button>
+        <div class="warning-message">
+            Sistema de Segurança Detectado<br>
+            Acesso Não Autorizado em Andamento<br>
+            Clique por sua própria conta e risco
+        </div>
+    </div>
+    
+    <div id="bsod">
+        <div class="sad-face">:(</div>
+        <div class="message">SEU DISPOSITIVO FOI HACKEADO</div>
+        <div class="info">
+            Todos os seus arquivos foram criptografados.<br>
+            Suas senhas e dados pessoais foram comprometidos.<br>
+            Câmera e microfone estão sob nosso controle.
+        </div>
+        <div class="progress">
+            Enviando dados para o servidor... <span id="counter">0</span>% concluído
+        </div>
+        <div class="code">
+            Código de erro: 0x00000HACK<br>
+            IP: 192.168.1.1 | MAC: XX:XX:XX:XX:XX:XX
+        </div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const startScreen = document.getElementById('start-screen');
+        const bsod = document.getElementById('bsod');
+        const counter = document.getElementById('counter');
+        
+        startBtn.addEventListener('click', () => {
+            startScreen.style.display = 'none';
+            bsod.style.display = 'block';
+            
+            let count = 0;
+            const interval = setInterval(() => {
+                count += Math.random() < 0.5 ? 0 : 1; // Muito mais lento
+                if (count >= 100) {
+                    count = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        alert('😄 BRINCADEIRA! Isso é apenas uma simulação. Seu dispositivo está seguro!');
+                        location.reload();
+                    }, 2000);
+                }
+                counter.textContent = count;
+            }, 6000); // 6 segundos por incremento = ~10 minutos total
+        });
+        
+        // Prevenir F11 e outras teclas
+        document.addEventListener('keydown', (e) => {
+            if (bsod.style.display === 'block') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
